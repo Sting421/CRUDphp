@@ -210,7 +210,8 @@ $reservations_result = $stmt->get_result();
                             <option value="">Choose an apartment...</option>
                             <?php while($apartment = $apartments_result->fetch_assoc()): ?>
                                 <option value="<?php echo $apartment['id']; ?>">
-                                    <?php echo htmlspecialchars($apartment['name']); ?>
+                                    <?php echo htmlspecialchars($apartment['name']); ?> - 
+                                    ₱<?php echo number_format($apartment['price'], 2, '.', ','); ?>
                                 </option>
                             <?php endwhile; ?>
                         </select>
@@ -223,6 +224,7 @@ $reservations_result = $stmt->get_result();
                                min="<?php echo date('Y-m-d\TH:i'); ?>"
                                required>
                     </div>
+                   
                     <button type="submit" name="submit_reservation" class="btn btn-primary">Submit Reservation</button>
                 </form>
             </div>
