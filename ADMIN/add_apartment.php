@@ -70,7 +70,7 @@ $mysqli->close();
                     <div class="card-header bg-white py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h1 class="h3 mb-0">Add New Apartment</h1>
-                            <a href="manage_apartments.php" class="btn btn-outline-secondary btn-sm">
+                            <a href="admin_dashboard.php?page=manage_apartments" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
                         </div>
