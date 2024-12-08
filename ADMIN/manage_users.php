@@ -8,18 +8,55 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once '../includes/db_connection.php';
 
 // Handle user deletion
-if (isset($_GET['delete'])) {
+if (isset($_GET['delete']) && isset($_SESSION['admin_id'])) {
     $userId = intval($_GET['delete']);
-    $deleteSql = "DELETE FROM users WHERE id = ?";
-    $stmt = $conn->prepare($deleteSql);
-    $stmt->bind_param("i", $userId);
-
-    if ($stmt->execute()) {
-        $success_message = "User deleted successfully.";
+    
+    // Prevent deleting the current admin
+    if ($userId == $_SESSION['admin_id']) {
+        $error_message = "You cannot delete your own account.";
     } else {
-        $error_message = "Error deleting user: " . $conn->error;
+        // Start a transaction for data integrity
+        $conn->begin_transaction();
+        
+        try {
+            // First, delete associated reservations
+            $deleteReservationsSql = "DELETE FROM reservations WHERE user_id = ?";
+            $reservationsStmt = $conn->prepare($deleteReservationsSql);
+            $reservationsStmt->bind_param("i", $userId);
+            $reservationsStmt->execute();
+            
+            // Then delete the user
+            $deleteUserSql = "DELETE FROM users WHERE id = ?";
+            $userStmt = $conn->prepare($deleteUserSql);
+            $userStmt->bind_param("i", $userId);
+            
+            if ($userStmt->execute()) {
+                // Log the deletion event
+                $logSql = "INSERT INTO admin_logs (admin_id, action, target_user_id, timestamp) VALUES (?, 'user_deleted', ?, NOW())";
+                $logStmt = $conn->prepare($logSql);
+                $logStmt->bind_param("ii", $_SESSION['admin_id'], $userId);
+                $logStmt->execute();
+                
+                // Commit the transaction
+                $conn->commit();
+                $success_message = "User and associated reservations deleted successfully.";
+            } else {
+                throw new Exception("Failed to delete user: " . $conn->error);
+            }
+            
+            // Close statements
+            $reservationsStmt->close();
+            $userStmt->close();
+            $logStmt->close();
+            
+        } catch (Exception $e) {
+            // Rollback the transaction in case of error
+            $conn->rollback();
+            $error_message = $e->getMessage();
+        }
     }
-    $stmt->close();
+} elseif (isset($_GET['delete']) && !isset($_SESSION['admin_id'])) {
+    $error_message = "Unauthorized access. Please log in as an admin.";
 }
 
 // Fetch users with additional information
@@ -225,7 +262,7 @@ if ($result === false) {
                                         <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="btn btn-edit">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <a href="?delete=<?php echo $user['id']; ?>" 
+                                        <a href="delete_user.php?id=<?php echo $user['id']; ?>" 
                                            class="btn btn-delete"
                                            onclick="return confirm('Are you sure you want to delete this user? This will also delete all their reservations.');">
                                             <i class="fas fa-trash"></i> Delete
