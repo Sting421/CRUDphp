@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 08, 2024 at 08:09 AM
+-- Generation Time: Dec 08, 2024 at 08:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,13 @@ CREATE TABLE `admins` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `name`, `email`, `password`, `created_at`) VALUES
+(1, 'ADMIN', 'admin@gmail.com', '$2y$10$3GCftyoNsA6s02fTO6LybOx6uoRIoJt5lBMUBhmCOZaSpNM1a0rZm', '2024-12-08 07:15:33');
+
 -- --------------------------------------------------------
 
 --
@@ -59,7 +66,7 @@ INSERT INTO `apartments` (`id`, `name`, `location`, `price`, `available`, `creat
 (2, 'Ocean View Residences', 'Miami', 3000.00, 1, '2024-12-08 00:15:00'),
 (3, 'Mountain Retreat', 'Denver', 1800.00, 0, '2024-12-08 00:30:00'),
 (4, 'City Center Loft', 'New York', 3500.00, 1, '2024-12-08 00:45:00'),
-(5, 'Lakeside Villas', 'Chicago', 2200.00, 0, '2024-12-08 01:00:00');
+(5, 'Lakeside Villas', 'Chicago', 32100.00, 0, '2024-12-08 01:00:00');
 
 -- --------------------------------------------------------
 
@@ -70,7 +77,9 @@ INSERT INTO `apartments` (`id`, `name`, `location`, `price`, `available`, `creat
 CREATE TABLE `boarding_houses` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `details` text NOT NULL
+  `details` text NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -164,7 +173,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `apartments`
