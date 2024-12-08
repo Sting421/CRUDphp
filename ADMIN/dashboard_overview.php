@@ -5,7 +5,6 @@ require_once '../includes/db_connection.php';
 $user_count = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
 $apartment_count = $conn->query("SELECT COUNT(*) as count FROM apartments")->fetch_assoc()['count'];
 $reservation_count = $conn->query("SELECT COUNT(*) as count FROM reservations")->fetch_assoc()['count'];
-$boarding_house_count = $conn->query("SELECT COUNT(*) as count FROM boarding_houses")->fetch_assoc()['count'];
 
 // Get recent reservations
 $recent_reservations = $conn->query("
@@ -124,11 +123,6 @@ if (!$recent_reservations) {
         <h3><?php echo $reservation_count; ?></h3>
         <p>Total Reservations</p>
     </div>
-    <div class="stat-card">
-        <i class="fas fa-house-user"></i>
-        <h3><?php echo $boarding_house_count; ?></h3>
-        <p>Boarding Houses</p>
-    </div>
 </div>
 
 <div class="recent-activity">
@@ -158,9 +152,6 @@ if (!$recent_reservations) {
     </a>
     <a href="?page=manage_apartments&action=add" class="action-btn">
         <i class="fas fa-plus-circle"></i> Add New Apartment
-    </a>
-    <a href="?page=manage_boarding_houses&action=add" class="action-btn">
-        <i class="fas fa-home"></i> Add Boarding House
     </a>
     <a href="?page=manage_reservations" class="action-btn">
         <i class="fas fa-list"></i> View All Reservations

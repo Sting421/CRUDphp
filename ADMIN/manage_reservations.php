@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Start output buffering
 // Check if session is already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -12,7 +13,7 @@ if (isset($_POST['update_status'])) {
     $reservation_id = intval($_POST['reservation_id']);
     $new_status = $_POST['new_status'];
     
-    $update_sql = "UPDATE tbl_reservation SET status = ? WHERE id = ?";
+    $update_sql = "UPDATE reservations SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($update_sql);
     $stmt->bind_param("si", $new_status, $reservation_id);
     
@@ -23,8 +24,8 @@ if (isset($_POST['update_status'])) {
     }
     $stmt->close();
     
-    // Redirect back to manage_reservations page
-    header("Location: admin_dashboard.php?page=manage_reservations");
+    // Use JavaScript for redirect
+    echo "<script>window.location.href='admin_dashboard.php?page=manage_reservations';</script>";
     exit();
 }
 
@@ -274,6 +275,38 @@ $statuses = $conn->query($status_query)->fetch_all(MYSQLI_ASSOC);
             background-color: #dc3545;
             color: white;
         }
+
+        .btn-update-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-update-status:hover {
+            background-color: #3247b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .btn-update-status:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn-update-status i {
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -405,13 +438,15 @@ $statuses = $conn->query($status_query)->fetch_all(MYSQLI_ASSOC);
                 <div class="mb-3">
                     <label for="new_status" class="form-label">New Status</label>
                     <select name="new_status" id="new_status" class="form-control" required>
+                        <option value="">--Select--</option>
                         <option value="reserved">Reserved</option>
                         <option value="canceled">Canceled</option>
                     </select>
                 </div>
                 <div class="text-end">
-                    <button type="submit" name="update_status" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Status
+                    <button type="submit" name="update_status" class="btn-update-status">
+                        <i class="fas fa-sync-alt"></i> 
+                        <span>Update Reservation Status</span>
                     </button>
                 </div>
             </form>

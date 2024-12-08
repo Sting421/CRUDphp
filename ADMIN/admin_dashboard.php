@@ -203,12 +203,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                         <span>Manage Reservations</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="?page=manage_boarding_houses" class="nav-link <?php echo $current_page === 'manage_boarding_houses' ? 'active' : ''; ?>">
-                        <i class="fas fa-house-user"></i>
-                        <span>Manage Boarding Houses</span>
-                    </a>
-                </li>
+                
             </ul>
             <a href="?logout=true" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
